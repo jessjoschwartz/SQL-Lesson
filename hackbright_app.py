@@ -35,6 +35,38 @@ def add_project(project_name, project_description, max_grade):
     CONN.commit()
     print "Successfully added project %s" % (project_name)
 
+def get_student_grade(student_github, project_title):
+    query = """SELECT grade 
+    FROM Grades WHERE project_title = (?) 
+    AND student_github = (?)"""
+    DB.execute(query, (project_title, student_github))
+
+    row = DB.fetchone()
+
+    print "%s got %d on %s" % (student_github, row[0], project_title)
+
+def give_grade(student_github, project_title, grade):
+    query = """UPDATE Grades 
+    SET grade = (?) WHERE student_github = (?) 
+    AND project_title = (?)"""
+    DB.execute(query, (grade, student_github, project_title))
+
+    CONN.commit()
+    print "Successfully added grade: %s for %s on %s" % (grade, student_github, project_title)
+
+def show_grades(student_github):
+    query = """SELECT * FROM Grades WHERE student_github = (?)"""
+    DB.execute(query, (student_github, ))
+
+    row = DB.fetchall()
+    for project in row:
+        print """Project Title: %s 
+Student Grade: %s
+
+""" % (project[1], project[2])
+
+
+
 def connect_to_db():
     global DB, CONN
     CONN = sqlite3.connect("hackbright.db")
@@ -46,7 +78,8 @@ def main():
     while command != "quit":
 
         input_string = raw_input("HBA Database> ")
-        tokens = input_string.split(",")
+        #tokens = input_string.strip()
+        tokens = input_string.split(", ")
         command = tokens[0]
         args = tokens[1:]
 
@@ -58,6 +91,12 @@ def main():
             project_by_title(*args)
         elif command == "new_project":
             add_project(*args)
+        elif command == "get_student_grade":
+            get_student_grade(*args)
+        elif command == "give_grade":
+            give_grade(*args)
+        elif command== "show_grades":
+            show_grades(*args)
 
     CONN.close()
 
