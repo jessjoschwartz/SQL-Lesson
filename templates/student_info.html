@@ -1,0 +1,12 @@
+<html>
+<body>
+<h1>Student: {{last_name}}, {{first_name}}</h1>
+<h2>Github: {{github}}</h2>
+<h3>Grades:  {% for project in row2%}
+                 <li>{{project[1]}}
+                     {{project[2]}}</li>
+                {% endfor %}</h3>
+<p>This student has shown extreme recalcitrance and has generally proved to be unreliable.</p>
+<p>It is my recommendation that they be put on double-secret probation for the remainder of the course.</p>
+</body>
+</html>
